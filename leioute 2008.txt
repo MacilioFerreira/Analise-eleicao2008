@@ -1,0 +1,157 @@
+Arquivo Eleições 2008
+
+Delimitador: ";"
+Sequência e definição dos campos:
+
+Receitas Comitê
+- DS_ORGAO - Tipo de comitê;
+- NR_PARTIDO - Número do partido;
+- SG_PARTIDO - Sigla do partido;
+- SG_UE_SUPERIOR - Unidade da federação;
+- NM_UE - Nome da unidade da federação;
+- SG_UE - Código do município;
+- NR_CNPJ - CNPJ de campanha;
+- VR_RECEITA - Valor da receita;
+- DT_RECEITA - Data da receita;
+- DS_TITULO - Tipo de receita;
+- CD_TITULO - Código do tipo de receita;
+- DS_ESP_RECURSO - Tipo de recurso (Em espécie, Cheque, Estimado, não informado);
+- CD_ESP_RECURSO - Código do tipo de recurso;
+- NM_DOADOR - Nome do doador;
+- CD_CPF_CNPJ_DOADOR - CPF/CNPJ doador;
+- SG_UE_SUPERIOR1 - Unidade da federação do doador;
+- NM_UE1 - Nome da unidade da federação;
+- SG_UE1 - Código do município;
+- SITUACAOCADASTRAL - Batimento Receita Federal do Brasil;
+- NM_MEMBRO - Nome do presidente do comitê financeiro;
+- NR_CPF - CPF do presidente do comitê.
+
+
+Despesas Comitê
+- DS_ORGAO - Tipo de comitê;
+- NR_PARTIDO - Número do partido;
+- SG_PARTIDO - Sigla do partido;
+- SG_UE_SUPERIOR - Unidade da federação;
+- NM_UE - Nome da unidade da federação;
+- SG_UE - Código do município;
+- NR_CNPJ - CNPJ de campanha;
+- VR_DESPESA - Valor da despesa;
+- DT_DESPESA - Data da despesa;
+- DS_TITULO - Tipo de despesa;
+- CD_TITULO - Código do tipo de despesa;
+- DS_ESP_RECURSO - Forma de pagamento (EM ESPÉCIE, CHEQUE, ESTIMADO, NÃO INFORMADO);
+- CD_ESP_RECURSO - Código da forma de pagamento;
+- DS_NR_DOCUMENTO - Número do documento;
+- DS_TIPO_DOCUMENTO - Tipo de documento (Nota Fiscal, Recibo, Outros);
+- CD_TIPO_DOCUMENTO - Código do tipo de documento;
+- NM_FORNECEDOR - Nome do fornecedor;
+- CD_CPF_CNPJ_FORNECEDOR - CPF/CNPJ do fornecedor;
+- SG_UE_SUPERIOR1 - Unidade da federação do fornecedor;
+- NM_UE1 - Nome da unidade da federação do fornecedor;
+- SG_UE1 - Código do município do fornecedor;
+- NO_UE - Unidade da federação do fornecedor;
+- SITUACAOCADASTRAL - Batimento Receita Federal do Brasil;
+- NM_MEMBRO - Nome do presidente do comitê;
+- NR_CPF - Número do CPF do presidente do comitê.
+
+Candidato
+- CD_NUM_CPF - CPF do candidato; :Chave primária
+- SEQUENCIAL_CANDIDATO - Número Sequencial do Candidato
+- NM_CANDIDATO - Nome do candidato;
+- SEXO - Sexo do(a) candidato(a);
+- DS_CARGO - Descrição do cargo;
+- CD_CARGO - Código do cargo;
+- NR_CANDIDATO - Número do candidato;
+- SG_UE_SUPERIOR - Unidade da federação do candidato;
+- NM_UE - Nome da unidade da federação;
+- SG_UE - Código do município;
+- DS_NR_TITULO_ELEITOR - Título eleitoral;
+- CD_NUM_CNPJ - CNPJ de campanha;
+- NR_PARTIDO - Número do partido;
+- SG_PARTIDO - Sigla do partido;
+
+Receitas Candidato
+- cpf_candidato :Chave estrangeira
+- VR_RECEITA - Valor da receita;
+- DT_RECEITA - Data da receita;
+- DS_TITULO - Tipo de receita;
+- CD_TITULO - Código do tipo de receita;
+- DS_ESP_RECURSO - Tipo de recurso (Em espécie, Cheque, Estimado, não informado);
+- CD_ESP_RECURSO - Código do tipo de recurso;
+- NM_DOADOR - Nome do doador;
+- CD_CPF_CNPJ_DOADOR - CPF/CNPJ doador;
+- SG_UE_SUPERIOR1 - Unidade da federação do doador;
+- NM_UE1 - Nome da unidade da federação;
+- SG_UE1 - Código do município;
+- SITUACAOCADASTRAL - Batimento Receita Federal do Brasil;
+- NM_ADM - Nome do administrador financeiro de campanha;
+- CD_CPF_ADM - CPF do administrador financeiro de campanha.
+
+
+Despesas Candidato
+- cpf_candidato :Chave Estrangeira
+- VR_DESPESA - Valor da despesa;
+- DT_DESPESA - Data da despesa;
+- DS_TITULO - Tipo de despesa;
+- CD_TITULO - Código do tipo de despesa;
+- DS_ESP_RECURSO - Forma de pagamento (EM ESPÉCIE, CHEQUE, ESTIMADO, NÃO INFORMADO);
+- CD_ESP_RECURSO - Código da Forma de pagamento;
+- DS_NR_DOCUMENTO - Número do documento;
+- DS_TIPO_DOCUMENTO - Tipo de documento (Nota Fiscal, Recibo, Outros);
+- CD_TIPO_DOCUMENTO - Código do tipo de documento;
+- NM_FORNECEDOR - Nome do fornecedor;
+- CD_CPF_CNPJ_FORNECEDOR - CPF/CNPJ do fornecedor;
+- SG_UE_SUPERIOR1 - Unidade da federação do fornecedor;
+- NM_UE1 - Nome da unidade da federação do fornecedor;
+- SG_UE1 - Código do município do fornecedor;
+- NO_UE - Unidade da federação do fornecedor;
+- SITUACAOCADASTRAL - Batimento Receita Federal do Brasil;
+- NM_ADM - Nome do administrador financeiro de campanha;
+- NR_CPF - Número do CPF do administrador financeiro de campanha.
+
+
+--- Trigger para proibir inserção de cpf's repetidos
+create or replace function equals_insertion() returns trigger as $$
+    declare 
+	cpf bigint;	
+    begin
+	select cd_num_cpf into cpf from candidato where cd_num_cpf = new.cd_num_cpf;
+        if new.cd_num_cpf = cpf then 
+            return null;
+        else return new;
+        end if;
+    end;
+$$ language plpgsql;
+
+create trigger trigger_equals_insertion before insert or update on candidato for each row execute procedure equals_insertion()
+
+-- dados
+vr_receita , dt_receita, ds_titulo , cd_titulo, ds_esp_recurso, cd_esp_recurso, 
+  nm_doador, cd_cpf_cnpj_doador, sg_ue_superior_1, nm_ue_1, sg_ue_1, situacaocadastral, nm_adm, cd_cpf_adm, cd_num_cpf
+
+
+-- tabela e inserção *receita_candidato
+create table receita_candidato(
+  vr_receita bigint,
+  dt_receita timestamp without time zone,
+  cd_titulo bigint,
+  cd_esp_recurso bigint,
+  nm_doador character varying(255),
+  sg_ue_superior_1 character varying(2),
+  sg_ue_1 bigint,
+  nm_adm character varying(255),
+  cd_cpf_adm bigint,
+  ds_esp_recurso character varying(255),
+  ds_titulo character varying(255),
+  nm_ue_1 character varying(255),
+  situacaocadastral character varying(100),
+  nm_ue character varying(255),
+  cd_cpf_cnpj_doador character varying(20),
+  cd_num_cpf bigint,
+  foreign key (cd_num_cpf) references candidato(cd_num_cpf)
+);
+
+insert into receita_candidato (vr_receita , dt_receita, ds_titulo , cd_titulo, ds_esp_recurso, cd_esp_recurso, nm_doador, cd_cpf_cnpj_doador, sg_ue_superior_1, nm_ue_1, sg_ue_1, situacaocadastral, nm_adm, cd_cpf_adm, cd_num_cpf)
+select vr_receita , dt_receita, ds_titulo , cd_titulo, ds_esp_recurso, cd_esp_recurso,nm_doador, cd_cpf_cnpj_doador, sg_ue_superior_1, nm_ue_1, sg_ue_1, situacaocadastral, nm_adm, cd_cpf_adm, cd_num_cpf 
+from tempo_receita_candidato;
+
